@@ -1,10 +1,8 @@
 /__pycache__
 /*.pyc
 /*.pyo
-/db.sqlite3
 /*~
 /*.bak
-/TestRep/db.sqlite3
 /.env
 /.venv
 /*.log
@@ -20,5 +18,11 @@
 /local_settings.py
 /*.dump
 /locale
-/authentication/migrations/*
+/API_Gateway/.idea
+/FP_Fixed/.idea
+/FP_Fixed/db.sqlite3
+/FP_Fixed/__pycache__
+/API_Gateway/__pycache__
+/FP_Fixed/venv
+/FP_Fixed/venv
 

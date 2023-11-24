@@ -1,14 +1,11 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework_jwt.settings import api_settings
 from rest_framework.generics import CreateAPIView
+from rest_framework.response import Response
 from .models import CustomUser
 from .serializers import RegistrationSerializer, AuthSerializer
-
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
+from .utils import generate_access_token, generate_refresh_token
 
 class UserRegistrationView(CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -20,15 +17,16 @@ class UserRegistrationView(CreateAPIView):
         self.perform_create(serializer)
         return Response({'message': 'Registration successful!'}, status=status.HTTP_201_CREATED)
 
-
 class CustomLoginView(APIView):
     def post(self, request):
         serializer = AuthSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user_data = serializer.validated_data
-        user = user_data.get('user')
+        user = serializer.validated_data.get('user')
 
-        payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload)
+        access_token = generate_access_token(user)
+        refresh_token = generate_refresh_token(user)
 
-        return Response({'token': token}, status=status.HTTP_200_OK)
+        return Response({
+            'accessToken': access_token,
+            'refreshToken': refresh_token
+        }, status=status.HTTP_200_OK)

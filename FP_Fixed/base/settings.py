@@ -15,7 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-APPEND_SLASH = True
+APPEND_SLASH = False
 
 # Application definition
 
@@ -122,11 +122,11 @@ REST_FRAMEWORK = {
     ),
 }
 
-JWT_AUTH = {
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': timedelta(minutes=15),
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=1),
-}
+JWT_SECRET_KEY = 'Cj9Ndq9c2mSPaI6zHHkdWwEXpudGUlYf1234567890abcdefgijklmnopqrstuvwxyz'
+JWT_ISSUER = 'FurryPets'
+JWT_ALGORITHM = 'HS512'
+JWT_ACCESS_TOKEN_LIFETIME = 60 * 600
+JWT_REFRESH_TOKEN_LIFETIME = 60 * 1440
 
 
 CORS_ALLOW_CREDENTIALS = True

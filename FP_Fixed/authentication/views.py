@@ -1,27 +1,27 @@
-from rest_framework.response import Response
+from django.contrib.auth import authenticate
+from django.http import HttpResponseBadRequest
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
-from .models import CustomUser
-from .serializers import RegistrationSerializer, AuthSerializer
+from rest_framework.views import APIView
+
+from .serializers import RegistrationSerializer, LoginSerializer, RefreshTokenSerializer
 from .utils import generate_access_token, generate_refresh_token
 
+
 class UserRegistrationView(CreateAPIView):
-    queryset = CustomUser.objects.all()
     serializer_class = RegistrationSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response({'message': 'Registration successful!'}, status=status.HTTP_201_CREATED)
 
 class CustomLoginView(APIView):
-    def post(self, request):
-        serializer = AuthSerializer(data=request.data)
+    @staticmethod
+    def post(request):
+        serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data.get('user')
+        validated_data = serializer.validated_data
+        user = authenticate(email=validated_data['email'], password=validated_data['password'])
+        if not user:
+            return HttpResponseBadRequest('Invalid credentials or user does not exist.')
 
         access_token = generate_access_token(user)
         refresh_token = generate_refresh_token(user)
@@ -30,3 +30,13 @@ class CustomLoginView(APIView):
             'accessToken': access_token,
             'refreshToken': refresh_token
         }, status=status.HTTP_200_OK)
+
+
+class RefreshTokenView(APIView):
+    @staticmethod
+    def post(request):
+        serializer = RefreshTokenSerializer(data=request.data)
+        if serializer.is_valid():
+            new_access_token = serializer.get_new_access_token()
+            return Response({'access': new_access_token}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

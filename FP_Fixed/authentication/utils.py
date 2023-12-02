@@ -2,6 +2,7 @@ import jwt
 from django.conf import settings
 from datetime import datetime, timedelta
 
+
 def generate_access_token(user):
     payload = {
         'user_id': user.id,
@@ -10,6 +11,7 @@ def generate_access_token(user):
         'iss': settings.JWT_ISSUER
     }
     return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
 
 def generate_refresh_token(user):
     payload = {

@@ -19,8 +19,8 @@ Install needed packages:
 
 Make a migrations:
 
-    python manage.py makemigrations;
-    python manage.py migrate;
+    python manage.py makemigrations
+    python manage.py migrate
     
 Run server:
 
@@ -30,11 +30,11 @@ URLs:
 
 Registration user:
 
-    http://127.0.0.1:8000/api/registration/
+    http://127.0.0.1:8000/api/registration
 
 Login user:
 
-    http://127.0.0.1:8000/api/login/
+    http://127.0.0.1:8000/api/login
 
 Write POST request in raw body:
 

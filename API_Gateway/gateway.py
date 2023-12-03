@@ -15,14 +15,20 @@ with open('services_config.json', 'r') as config_file:
     gateway_config = json.load(config_file)
 
 
-def decode_jwt(token: str) -> dict:
+def decode_jwt(token: str, user_id: str = None) -> dict:
     try:
         decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         if decoded_token["exp"] < time.time():
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token expired")
 
+        if user_id and decoded_token.get("user_id") != user_id:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid user ID")
+
         token_type = decoded_token.get('token_type')
-        return {"payload": decoded_token, "type": token_type}
+        if token_type != 'access':
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token type")
+
+        return {"payload": decoded_token}
     except PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Could not validate credentials"
@@ -44,7 +50,12 @@ async def gateway_route(public_path: str, request: Request):
         if not (auth_header := request.headers.get("Authorization")):
             raise HTTPException(status_code=401, detail="Authorization header is missing")
 
-        token = auth_header
+        token = auth_header.split(" ")[1] if len(auth_header.split(" ")) > 1 else None # Created by GPT
+        if not token:# Created by GPT
+            raise HTTPException(status_code=401, detail="Token not provided")# Created by GPT
+
+        user_id = request.headers.get("X-User-ID")# Created by GPT
+        decode_jwt(token, user_id)# Created by GPT
 
     call_headers = {}
 

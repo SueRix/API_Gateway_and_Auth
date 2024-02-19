@@ -6,3 +6,4 @@ FP_Fixed/db.sqlite3
 FP_Fixed/__pycache__
 FP_Fixed/venv
 *.pyc
+.idea

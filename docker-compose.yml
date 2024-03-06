@@ -1,0 +1,52 @@
+version: '3.12'
+
+
+
+services:
+
+  djangoapp:
+    build:
+      context: ./FP_Fixed
+    environment:
+      - POSTGRES_USER=suerix
+      - POSTGRES_PASSWORD=bar000000
+      - POSTGRES_DB=fpdatabase
+    ports:
+      - "8002:8002"
+    depends_on:
+      - apigateway
+#    volumes:
+#      - .:/code
+
+  apigateway:
+    build:
+      context: ./API_Gateway
+    ports:
+      - "8001:8001"
+    environment:
+      AUTH_SERVICE_URL: 'http://djangoapp:8002'
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=suerix
+      - POSTGRES_PASSWORD=bar000000
+      - POSTGRES_DB=fpdatabase
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+
+#ALL TODOs
+#TODO: Figer out how to pass service host
+#TODO: Overwrite this class BASESETTINGS Pydentic to avoid os getenv.
+#TODO: Create env file to store these variables
+#TODO: Create commits to master branch, produce pull requests to Git.
+#TODO: Produce deploy this service.
+#TODO: Add database to docker compose.
+#TODO: DRY, create variable in this config.
+#TODO: FIX "ALLOWED HOSTS" in settings.py.
+#TODO: FIX CORRECT DJANGO RUN TO GUVICORN(read doc).
+#TODO: WRITE DOCUMENTANTION FOR EVERY SERVICE AND DATABASE.

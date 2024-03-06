@@ -1,0 +1,16 @@
+steps:
+- name: Build Django app
+  image: 'gcr.io/cloudbuilders/docker'
+  command: ['docker', 'build', '-t', 'djangoapp', '-f', 'Dockerfile', '.']
+
+- name: Build API Gateway
+  image: 'gcr.io/cloudbuilders/docker'
+  command: ['docker', 'build', '-t', 'apigateway', '-f', 'Dockerfile', '.']
+
+- name: Deploy
+  image: 'gcr.io/cloudbuilders/docker'
+  command: ['docker-compose', 'up', '--build']
+
+images:
+- 'djangoapp'
+- 'apigateway'

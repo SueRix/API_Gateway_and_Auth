@@ -2,26 +2,48 @@
   "routes": [
     {
       "public_path": "api/registration",
-      "service_url": "http://127.0.0.1:8080"
+      "service_url": "AUTH_SERVICE_URL",
+      "required_validation_token": false
     },
     {
       "public_path": "api/login",
-      "service_url": "http://127.0.0.1:8080"
+      "service_url": "AUTH_SERVICE_URL",
+      "required_validation_token": false
     },
-
     {
       "public_path": "api/calendarNote/create",
-      "service_url": "http://localhost:5000"
+      "service_url": "CALENDAR_SERVICE_URL",
+      "required_validation_token": true
     },
-
     {
-      "public_path": "api/user/register",
-      "service_url": "http://localhost:5000"
+      "public_path": "api/calendarNote/edit",
+      "service_url": "CALENDAR_SERVICE_URL",
+      "required_validation_token": true
     },
-
     {
-      "public_path": "api/user/login",
-      "service_url": "http://localhost:5000"
+      "public_path": "api/calendarNote/get",
+      "service_url": "CALENDAR_SERVICE_URL",
+      "required_validation_token": true
+    },
+    {
+      "public_path": "api/refresh",
+      "service_url": "AUTH_SERVICE_URL",
+      "required_validation_token": false
+    },
+    {
+      "public_path": "api/logout",
+      "service_url": "AUTH_SERVICE_URL",
+      "required_validation_token": false
+    },
+    {
+      "public_path": "api/change-password",
+      "service_url": "AUTH_SERVICE_URL",
+      "required_validation_token": true
+    },
+    {
+      "public_path": "api/change-username",
+      "service_url": "AUTH_SERVICE_URL",
+      "required_validation_token": true
     }
   ]
 }

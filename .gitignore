@@ -1,6 +1,5 @@
-/__pycache__
-/*.pyc
-/*.pyo
+**/*.pyc
+*.pyo
 /*~
 /*.bak
 /.env
@@ -9,7 +8,7 @@
 /media
 /staticfiles
 /.vscod
-/.idea
+.idea/
 /venv
 /node_modules
 /*.swp
@@ -24,5 +23,10 @@
 /FP_Fixed/__pycache__
 /API_Gateway/__pycache__
 /FP_Fixed/venv
-/FP_Fixed/venv
+/data
+__pycache__/
+db.sqlite3
+**/venv/
+**/.idea/
 
+#TODO: FIX .gitignore

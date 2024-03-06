@@ -19,8 +19,8 @@ Install needed packages:
 
 Make a migrations:
 
-    python manage.py makemigrations;
-    python manage.py migrate;
+    python manage.py makemigrations
+    python manage.py migrate
     
 Run server:
 

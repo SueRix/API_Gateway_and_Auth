@@ -1,74 +1,35 @@
-from django.contrib.auth import authenticate
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
 from rest_framework import serializers
+
 from .models import CustomUser
-from rest_framework_jwt.settings import api_settings
-
-jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-
-class CustomUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('id', 'username', 'email')
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            password=validated_data['password']
-        )
-        return user
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(write_only=True)
-
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'password', 'confirm_password')
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def validate_email(self, value):
-        try:
-            validate_email(value)
-        except ValidationError:
-            raise serializers.ValidationError("Invalid email format")
-        return value
-
-    def validate_password(self, value):
-        password = value
-        confirm_password = self.initial_data.get('confirm_password')
-
-        if password != confirm_password:
-            raise serializers.ValidationError("Passwords do not match!")
-
-        if len(value) < 8:
-            raise serializers.ValidationError("Password must be at least 8 characters long!")
-
-        return value
+        fields = ('id', 'username', 'email', 'password')
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'id': {'read_only': True}
+        }
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
+        user = CustomUser(
             email=validated_data['email'],
-            username=validated_data['username'],
-            password=validated_data['password']
+            username=validated_data['username']
         )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
 
 
-class AuthSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField()
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
 
-    def validate(self, data):
-        user = authenticate(email=data['email'], password=data['password'])
-        if not user:
-            raise serializers.ValidationError("Unable to login with provided credentials.")
-        if not user.is_active:
-            raise serializers.ValidationError("This account is inactive.")
-        data['user'] = user
-        return data
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+class UsernameChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username']
